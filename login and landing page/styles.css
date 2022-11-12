@@ -1,0 +1,168 @@
+@import url('https://fonts.googleapis.com/css?family=EB+Garamond');
+
+html{
+  scroll-behavior: smooth;
+}
+body,
+#slider,
+.wrap,
+.slide-content {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100vh;
+  overflow-x: hidden;
+}
+footer{
+  background-color:burlywood;
+  bottom: 0;
+  color: #fff;
+  text-align: center;
+  width: 100%
+}
+/* slider*/
+.wrap {
+  position: relative;
+}
+
+.slide {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+}
+
+.slide1 {
+  background-image: url(images/download.jpg); 
+}
+.slide2 {
+  background-image: url(images/download\ \(1\).jpg);
+}
+.slide3 {
+  background-image: url(images/images.jpg);
+}
+
+.slide-content {
+  font-family: 'EB Garamond', serif;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.slide-content span {
+  font-size: 10rem;
+  color:#E5E5E5;
+}
+.slide-content p{
+  font-size: 2rem;
+  color:#E5E5E5;
+  padding-top: 0;
+}
+@media only screen and (max-width: 600px) {
+  .slide-content span {
+    font-size: 5rem;
+  }
+  #git,#hub,#about{
+    overflow: scroll;
+    height:auto;
+	  margin: 0;
+	  width: auto;
+	  padding-top: 3rem;
+  }
+}
+/*  git */
+#git{
+  background-image: url(images/7xm.xyz893289.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height:100vh;
+  overflow: hidden;
+  color:#fff;
+}
+/* hub  */
+#hub{
+  background-image: url(images/depositphotos_18781011-stock-illustration-indian-flag-color-creative-wave.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height:100vh;
+  overflow: hidden;
+  color:#fff;
+}
+
+
+
+
+/*about   */
+#about{
+  background-image: url(images/7xm.xyz486207.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height:100vh;
+  overflow: hidden;
+}
+#about container{
+  width: 25%;
+  right:50%;
+  top:35%;
+}
+.logo-img{
+ 
+  float:right;
+  padding-top: 10%;
+ 
+}
+.aboutinfo{
+    text-align:right;
+    float:right;
+    color:#502A1C;
+    padding-left: 40%;
+}
+
+
+.gittt{
+  padding-top:15%;
+  color: #333;
+  font-size: 1rem;
+}
+
+.gittt h4{
+  text-align: center;
+  font-size: 3rem;
+  color:#502A1C;
+}
+.Hurry{
+  padding-top:15%;
+  color: #333;
+  font-size: 1rem;
+}
+
+.Hurry h4{
+  text-align: center;
+  font-size: 3rem;
+  color:#502A1C;
+}
+/* TOP BUTTON CSS */
+#myBtn {
+  display: none;
+  position: fixed;
+  bottom: 20px;
+  right: 30px;
+  z-index: 99;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  background-color: #502A1C;
+  color: white;
+  cursor: pointer;
+  padding: 15px;
+  border-radius: 50%;
+}
+
+#myBtn:hover {
+  opacity: 0.5;
+}
