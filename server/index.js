@@ -68,7 +68,7 @@ app.get('/', (req, res) => {
 
 app.get('/users', (request, response) => {
     console.log("got here\n");
-    User.findOne({username: "a@a"}).then(users => {
+    User.findOne({email: "a@a"}).then(users => {
         response.json(users)
     })
 })
@@ -79,7 +79,7 @@ app.post('/add', (request, response) => {
 
 
     const user = new User({
-        username: body.username,
+        email: body.email,
         password: body.password,
     })
     console.log(user);
@@ -94,11 +94,11 @@ app.post('/register', (request, response) => {
     const body = request.body
 
     const user = new User({
-        username: body.username,
+        email: body.email,
         password: body.password,
     })
 
-    const sessUser = { username: user.username,  password: user.password};
+    const sessUser = { email: user.email,  password: user.password};
     request.session.user = sessUser;
     console.log("User session cookie: ");
     console.log(request.session.user);
@@ -113,10 +113,10 @@ app.post('/login', (request, response) => {
     console.log("in login\n");
     const body = request.body
 
-    User.findOne({username: body.username}).then(user => {
+    User.findOne({email: body.email}).then(user => {
         if (user.password === body.password)
         {
-            const sessUser = { username: user.username,  password: user.password};
+            const sessUser = { email: user.email,  password: user.password};
             request.session.user = sessUser;
             console.log("login successful");
         }
