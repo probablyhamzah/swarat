@@ -61,7 +61,7 @@
             </div>
         </div>
     </div>
-    <script>
+    <script async>
 
 
         var responsiveSlider = function () {
@@ -103,10 +103,12 @@
             };
 
             next.addEventListener("click", function () {
+            	console.log(next)
                 nextSlide();
             });
 
             prev.addEventListener("click", function () {
+                console.log(prev)
                 prevSlide();
             });
 

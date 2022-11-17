@@ -4,7 +4,7 @@ import { Route, Routes } from "react-router-dom";
  
 import Add from "./components/add"; 
 import Login from "./components/login";
-import Upload from "./components/upload";
+import user from "./components/user";
 
 //import ChatBox from "./components/chatbox";
  
@@ -14,7 +14,7 @@ const App = () => {
          <Routes>
          <Route path="/add" element={<Add />} />
          <Route path="/login" element={<Login />} />
-         <Route path="/upload" element={<Upload />} />
+         <Route path="/user" element={<user />}/>
          </Routes>
    </div>
  );
