@@ -166,3 +166,8 @@ footer{
 #myBtn:hover {
   opacity: 0.5;
 }
+
+.post_img img{
+  max-height: 2%;
+
+}

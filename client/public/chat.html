@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<head>
+    <title>ChatBud - Chat made easy! 💬</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <!-- material icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- favicon -->
+    <link rel="icon" href="images/favicon.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<style>body {
+    margin: 0;
+    padding-bottom: 5rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: #0d1418;
+}
+
+.messageContainer {
+    width: 75%;
+    display: flex;
+    flex-direction: column;
+}
+
+.message {
+    border-radius: 4px;
+    padding: 0.5rem 1rem;
+    width: auto;
+    color: #d4d5d7;
+    margin-top: 2rem;
+}
+
+.metaData {
+    font-family: monospace;
+    font-size: 0.8rem;
+    width: auto;
+    color: #f1f1f2a1;
+}
+
+.time {
+    font-family: monospace;
+    font-size: 0.8rem;
+    float: right;
+    position: relative;
+    bottom: -7px;
+    color: #f1f1f2a1;
+    padding-left: 2rem;
+}
+
+.receivedMessage {
+    background-color: #262d31;
+    max-width: 50%;
+    width: auto;
+    align-self: flex-start;
+}
+
+.sentMessage {
+    max-width: 40%;
+    background-color: #056162;
+    align-self: flex-end;
+}
+
+.botMessage {
+    max-width: 75%;
+    align-self: center;
+    background-color: #223138;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+}
+
+#form {
+    background-color: #1e2428;
+    padding: 0.25rem;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    height: 4rem;
+    box-sizing: border-box;
+    width: 100%;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.nickBox {
+    color: #d4d5d7;
+    border: 0;
+    border-radius: 4px;
+    background-color: #33383b;
+    height: 75%;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
+    margin-right: 1rem;
+    width: 15%;
+}
+
+.nickBox:focus {
+    outline: 0;
+    border: 1px #056162 solid;
+}
+
+.messageBox {
+    width: 60%;
+    color: #d4d5d7;
+    border: 0;
+    border-radius: 1000px;
+    background-color: #33383b;
+    max-width: 60%;
+    height: 75%;
+    padding-left: 1.5%;
+    padding-right: 1.5%;
+}
+
+.messageBox:focus {
+    outline: 0;
+    border: 1px #056162 solid;
+}
+
+.dropdown-menu .row .col{
+    background: none;
+	color: inherit;
+	border: none;
+	padding: 0;
+	font: inherit;
+	cursor: pointer;
+	outline: inherit;
+}
+
+.sendButton {
+    color: #d4d5d7;
+    height: 75%;
+    width: auto;
+    border-radius: 50%;
+    border: 0;
+    border-radius: 4px;
+    max-width: 10%;
+    background-color: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 1rem;
+}
+ 
+.userCount{
+    position: fixed;
+    left: 0;
+}
+
+.linkButton{
+    text-decoration: none;
+}
+.linkButton:hover,:active{
+    color: #d4d5d7;
+}
+
+emoji-picker{
+    position: absolute;
+    bottom:60px;
+    right: 10%;
+    height: 50vh;  
+}
+
+@media only screen and (max-width: 576px) {
+    .receivedMessage {
+        max-width: 85%;
+    }
+    
+    .sentMessage {
+        max-width: 80%;
+    }
+    .userCount{
+        position: absolute;
+        left: 0;
+    }
+    emoji-picker{
+        --num-columns: 3;
+        --indicator-color:transperant;
+         --category-emoji-padding: 4px;
+        width: 40vmin;
+        height: 50vh;
+        right: 1px;
+    }
+
+}
+
+@media only screen and (max-width: 360px) {
+    .receivedMessage {
+        max-width: 95%;
+    }
+    
+    .sentMessage {
+        max-width: 90%;
+    }
+    emoji-picker{
+        --num-columns: 3;
+        width: 40vmin;
+        height: 50vh;
+        right: 1px;
+    }
+}</style>
+<body>
+    <!-- message, receivedMessage, sentMessage, botMessage -->
+    <div class="container messageContainer fixedUsers">
+        <p style="color: white;" class="userCount">Active users:<span id="activeUsers" class="activeUsers">0</span></p>
+    </div>
+    <form id="form" action="">
+        <input class="nickBox" placeholder="Nickname">
+        
+            
+            
+        <input id="input" autocomplete="off" class="messageBox" placeholder="Type a message...">
+         
+            <a class="sendButton linkButton emojiButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <span class="material-icons">
+                sentiment_satisfied_alt
+                </span>
+            </a>  
+        <emoji-picker class="light emoji" style="display: none;"></emoji-picker>      
+
+        <button class="sendButton">
+            <span class="material-icons">
+                send
+            </span>
+        </button>
+       
+    </form>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="js/index.js"></script>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/emoji-picker-element@^1/index.js"></script>
+<script>var socket = io();
+var form = document.getElementById('form');
+var input = document.getElementById('input');
+var nick = document.querySelector(".nickBox");
+
+// listening for bot messages
+socket.on("botMessage", function (message) {
+    console.log(message);
+    //dom manipulation for bot messages
+    const div = document.createElement("div");
+    div.classList.add("message");
+    div.classList.add("botMessage");
+    div.innerHTML = message;
+    document.querySelector(".messageContainer").appendChild(div);
+    div.scrollIntoView();
+})
+
+//emitting new messages if submitted
+form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    if (input.value) {
+        var message = input.value;
+        //emitting message and nick to the server
+        socket.emit("sentMessage", message);
+        socket.emit("nick", nick.value);
+        input.value = '';
+        //dom manipulation for sent messages
+        const div = document.createElement("div");
+        div.classList.add("message");
+        div.classList.add("sentMessage");
+        div.innerHTML = message + "<br><span class = 'metaData'>" + nick.value + "</span>";
+        document.querySelector(".messageContainer").appendChild(div);
+        div.scrollIntoView();
+        //time manipulation
+        var d = new Date();
+        if (d.getHours() > 12) {
+            if (d.getMinutes() < 10) {
+                div.innerHTML = div.innerHTML + "<div class='time'>" + (d.getHours() - 12) + ":0" + d.getMinutes() + " PM" + "</div>";
+            }
+            else {
+                div.innerHTML = div.innerHTML + "<div class='time'>" + (d.getHours() - 12) + ":" + d.getMinutes() + " PM" + "</div>";
+            }
+        }
+        else {
+            if (d.getMinutes() < 10) {
+                div.innerHTML = div.innerHTML + "<div class='time'>" + d.getHours() + ":0" + d.getMinutes() + " AM" + "</div>";
+            }
+            else {
+                div.innerHTML = div.innerHTML + "<div class='time'>" + d.getHours() + ":" + d.getMinutes() + " AM" + "</div>";
+            }
+        }
+    }
+    document.querySelector(".nickBox").setAttribute("disabled", "disabled");
+});
+
+//listening for incoming messages
+socket.on("receivedMessage", function (message) {
+    // console.log(message);
+    //dom manipulation for received messages
+    const div = document.createElement("div");
+    div.classList.add("message");
+    div.classList.add("receivedMessage");
+    div.innerHTML = message;
+    document.querySelector(".messageContainer").appendChild(div);
+    div.scrollIntoView();
+})
+
+// listening for incoming nicks
+socket.on("nick", function (message) {
+    console.log(message);
+    var length = document.querySelectorAll(".receivedMessage").length;
+    var lastChild = document.querySelectorAll(".receivedMessage")[length - 1];
+    lastChild.innerHTML = lastChild.innerHTML + "<br><span class = 'metaData'>" + message + "</span>";
+    //time manipulation
+    var d = new Date();
+    if (d.getHours() > 12) {
+        if (d.getMinutes() < 10) {
+            lastChild.innerHTML = lastChild.innerHTML + "<div class='time'>" + (d.getHours() - 12) + ":0" + d.getMinutes() + " PM" + "</div>";
+        }
+        else {
+            lastChild.innerHTML = lastChild.innerHTML + "<div class='time'>" + (d.getHours() - 12) + ":" + d.getMinutes() + " PM" + "</div>";
+        }
+    }
+    else {
+        if (d.getMinutes() < 10) {
+            lastChild.innerHTML = lastChild.innerHTML + "<div class='time'>" + d.getHours() + ":0" + d.getMinutes() + " AM" + "</div>";
+        }
+        else {
+            lastChild.innerHTML = lastChild.innerHTML + "<div class='time'>" + d.getHours() + ":" + d.getMinutes() + " AM" + "</div>";
+        }
+    }
+})
+
+
+socket.on("users", function (data) {
+    var item = document.getElementsByClassName("activeUsers");
+    var oldUsersValue = item[0].childNodes[0];
+    let latestUsersValue = data.users;
+    oldUsersValue.nodeValue = latestUsersValue;
+});
+
+// get emoji-picker from HTML
+let picker = document.querySelector("emoji-picker");
+let emojiSelector = document.querySelector(".emojiButton");
+
+$('.linkButton').click(function(e) {   
+  e.preventDefault();
+  // show list of emoji's on button click
+  if (picker.style.display === "none") {
+    picker.style.display = "block";
+  } else {
+    picker.style.display = "none";
+  } 
+});
+picker.addEventListener("emoji-click", (event) => {
+    event.preventDefault();
+  let textBox = document.getElementById("input");
+  //Retrieve Emoji's from returned JSON
+  let myObj = JSON.stringify(event.detail.unicode);
+  // Remove double quotes at the beginning and end of emoji
+  myObj = myObj.replace(/^"(.*)"$/, "$1");
+  //add emoji to textbox
+  textBox.value = textBox.value + myObj;
+  textBox.focus();
+  console.log(event.detail);
+
+ 
+}); 
+ </script>
+ </body>
+</html>

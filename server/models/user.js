@@ -1,5 +1,5 @@
 //require("dotenv").config({ path: "../config.env" });
-const mongoose = require('mongoose')
+const mongoose = require('mongoose'), Schema = mongoose.Schema
 
 const url = process.env.DB_URI;
 
@@ -15,6 +15,8 @@ mongoose.connect(url)
 const user = new mongoose.Schema({
     username: String,
     password: String,
+    volunteering: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
+    uploaded: [{ type: Schema.Types.ObjectId, ref: 'Post' }]
 })
 
 user.set('toJSON', {

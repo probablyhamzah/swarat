@@ -10,7 +10,7 @@ export default function Login() {
         document.querySelector('.cont').classList.toggle('s-signup')
     }
     const [form, setForm] = useState({
-        email: "",
+        username: "",
         password: "",
     });
     const navigate = useNavigate();
@@ -40,8 +40,8 @@ export default function Login() {
                 return;
             });
         
-        setForm({ email: "", password: "" });
-        navigate("/add");
+        setForm({ username: "", password: "" });
+        navigate("/posts.html");
         console.log("redirected (???)")
     }
 
@@ -63,8 +63,8 @@ export default function Login() {
                 return;
             });
         
-        setForm({ email: "", password: "" });
-        navigate("/add");
+        setForm({ username: "", password: "" });
+        navigate("/posts.html");
 
         
     }
@@ -76,7 +76,7 @@ export default function Login() {
         <form onSubmit={login}>
             <label>
                 <span>Email Address</span>
-                <input type="email" name="email" id="email" value={form.email} onChange={(e) => updateForm({ email: e.target.value })}/>
+                <input type="email" name="email" id="username" value={form.username} onChange={(e) => updateForm({ username: e.target.value })}/>
             </label>
         
             <label>
@@ -117,7 +117,7 @@ export default function Login() {
 
                 <label>
                     <span>Email</span>
-                    <input type="email" id="email" value={form.email} onChange={(e) => updateForm({ email: e.target.value })}/>
+                    <input type="email" id="username" value={form.username} onChange={(e) => updateForm({ username: e.target.value })}/>
                 </label>
 
                 <label>

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>post</title>
+
+    <link rel="stylesheet" href="newinfo.css">
+    <link rel="stylesheet" href="slider+containerasmodel.css">
+    <script src="script.js"></script>
+
+
+</head>
+
+<body>
+    <div id="navbar">
+        <h1>Swarat</h1>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="profile.html">profile</a></li>
+            <li><a href="login.html">Login</a></li>
+        </ul>
+
+    </div>
+    <div class="container">
+        <div class="post_heading">
+            <h2>POST</h2>
+        </div>
+        <div class="post_cont">
+
+        </div>
+    </div>
+
+    <div class="bg-modal">
+        <div class="modal-content">
+            <div class="close">+</div>
+            <div id="slider">
+                <ul id="slideWrap">
+                    <li><img id="image" src="download (1).jpg" alt=""></li>
+                </ul>
+                <a id="prev" href="#">&#8810;</a>
+                <a id="next" href="#">&#8811;</a>
+            </div>
+            <div class="box">
+                <div class="contentbox">
+                    <p id = "des">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Delectus tempora id dignissimos sed
+                        pariatur at ad natus commodi beatae reprehenderit, soluta voluptate a assumenda aut cumque
+                        saepe, vero amet explicabo!</p>
+                </div>
+                <button id = "csec" class="submit" type="button">volunteer</button>
+            </div>
+        </div>
+    </div>
+    <script>
+
+
+        var responsiveSlider = function () {
+
+            var slider = document.getElementById("slider");
+            var sliderWidth = slider.offsetWidth;
+            var slideList = document.getElementById("slideWrap");
+            var count = 1;
+            var items = slideList.querySelectorAll("li").length;
+            var prev = document.getElementById("prev");
+            var next = document.getElementById("next");
+
+            window.addEventListener('resize', function () {
+                sliderWidth = slider.offsetWidth;
+            });
+
+            var prevSlide = function () {
+                if (count > 1) {
+                    count = count - 2;
+                    slideList.style.left = "-" + count * sliderWidth + "px";
+                    count++;
+                }
+                else if (count = 1) {
+                    count = items - 1;
+                    slideList.style.left = "-" + count * sliderWidth + "px";
+                    count++;
+                }
+            };
+
+            var nextSlide = function () {
+                if (count < items) {
+                    slideList.style.left = "-" + count * sliderWidth + "px";
+                    count++;
+                }
+                else if (count = items) {
+                    slideList.style.left = "0px";
+                    count = 1;
+                }
+            };
+
+            next.addEventListener("click", function () {
+                nextSlide();
+            });
+
+            prev.addEventListener("click", function () {
+                prevSlide();
+            });
+
+            setInterval(function () {
+                nextSlide()
+            }, 5000);
+
+        };
+
+        window.onload = function () {
+            responsiveSlider();
+        }
+
+
+    </script>
+    <script>
+
+        /*div class="post_cont">
+                <div class="post">
+                    <div class="post_img">
+                        <img src=".." alt="">
+                    </div>
+                    <div class="post_info">
+                        
+                        <h1 class="post_title">Lorem ipsum dolor sit amet.</h1>
+                        <p class="post_text">
+                           desc
+                        </p>
+        
+                        <a href="#"  class="post_cta">Read More</a>
+                    </div>
+                </div>*/
+
+        for (let i = 0; i < 2; i++) {
+
+            const post_container = document.querySelector('.post_cont');
+            // console.log(post_container);
+
+            const post = document.createElement('div');
+            // console.log(post);
+            post.classList.add('post');
+
+            const post_img = document.createElement('div');
+            post_img.classList.add('post_img');
+
+            const img = document.createElement('img');
+            img.src = 'anything.jpg';
+            img.alt = 'anything';
+
+            //src
+            const post_info = document.createElement('div');
+            post_info.classList.add('post_info');
+
+            const h1 = document.createElement('h1');
+            h1.classList.add('post_title');
+            h1.textContent = 'Lorem ipsum dolor sit amet';
+
+            const para = document.createElement('p');
+            para.classList.add('post_text');
+            para.textContent = 'this is decription';
+
+            const a = document.createElement('a');
+            a.classList.add('post_cta');
+            a.textContent = "Read More";
+
+            post_container.appendChild(post);
+            post.appendChild(post_img);
+            post.appendChild(post_info);
+
+            post_img.appendChild(img);
+
+            post_info.appendChild(h1);
+            post_info.appendChild(para);
+            post_info.appendChild(a);
+        }
+        document.querySelectorAll('.post_cta').forEach(item => {
+            item.addEventListener('click', function () {
+                let a = document.getElementById('image');
+                a.src = "hello";
+                a.alt = "hello112";
+                let b = document.getElementById('des');
+                b.textContent = "hello";
+                document.querySelector('.bg-modal').style.display = 'flex';
+            })
+        })
+        document.querySelector('.close').addEventListener('click', function () {
+            document.querySelector('.bg-modal').style.display = 'none';
+        })
+
+
+        // <div class="bg-modal">
+        //         <div class="modal-content">
+        //             <div class="close">+</div>
+        //             <div id="slider">
+        //                 <ul id="slideWrap">
+        //                     <li><img src="download (1).jpg" alt=""></li>
+        //                 </ul>
+        //                 <a id="prev" href="#">&#8810;</a>
+        //                 <a id="next" href="#">&#8811;</a>
+        //             </div>
+        //             <div class="box">
+        //                 <div class="contentbox">
+        //                 <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Delectus tempora id dignissimos sed pariatur at ad natus commodi beatae reprehenderit, soluta voluptate a assumenda aut cumque saepe, vero amet explicabo!</p>
+        //                 </div>
+        //                 <button class="submit" type="button">volunteer</button>
+        //             </div>
+        //         </div>
+        //     </div>
+        //     <script> 
+
+    </script>
+    <script>
+        // document.querySelectorAll('.post_cta').addEventListener('click',function(){
+        //     document.querySelector('.bg-modal').style.display ='flex';
+        // });
+
+
+
+    </script>
+</body>
+
+</html>
