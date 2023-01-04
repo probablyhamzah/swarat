@@ -1,15 +1,5 @@
 const mongoose = require('mongoose'), Schema = mongoose.Schema
 
-const url = process.env.DB_URI;
-
-console.log('connecting to', url)
-mongoose.connect(url)
-  .then(result => {
-    console.log('connected to MongoDB')
-  })
-  .catch((error) => {
-    console.log('error connecting to MongoDB:', error.message)
-  })
 
 const chat = new mongoose.Schema({
     iden: Number,
