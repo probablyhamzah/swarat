@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import "./login.css"
-
+import 'cross-fetch/polyfill';
 
 
 export default function Login() {
@@ -31,8 +31,10 @@ export default function Login() {
         await fetch("http://localhost:3001/login", {
             method: "POST",
             headers: {
+                'Accept': 'application/json',
                 "Content-Type": "application/json",
             },
+            credentials: 'include',
             body: JSON.stringify(newUser),
         })
             .catch(error => {

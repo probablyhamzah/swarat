@@ -5,10 +5,8 @@ const cors = require('cors')
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
 const router = express.Router();
-const morgan = require("morgan");
 const mongoose = require("mongoose");
 const path = require("path");
-const helmet = require('helmet');
 
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
@@ -22,7 +20,10 @@ const Post = require('./models/post')
 const Chat = require('./models/chat')
 
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin : 'http://localhost:3000', //(Whatever your frontend url is) 
+  credentials: true, // <= Accept credentials (cookies) sent by the client
+}))
 //app.use(express.static('build'))
 app.use(express.urlencoded({ extended: false }));
 
@@ -47,7 +48,7 @@ mongoose.connect(url)
   })
 
 
-var localuser = "a@a", localid;
+//var request.session.username = "a@a", request.session.userid;
 var localltd, locallng;
 
 var coords = {};
@@ -72,12 +73,7 @@ function distance(lat1, long1, lat2, long2) {
 
 
 
-//app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
-
-//app.use(morgan("dev"));
-
-//app.use(helmet())
 
 
 
@@ -92,7 +88,7 @@ app.get('/', (req, res) => {
 
 app.get('/users', (request, response) => {
     console.log("got here\n");
-    User.findOne({ username: localuser }).then(users => {
+    User.findOne({ username: request.session.username }).then(users => {
         response.json(users)
     })
 })
@@ -145,29 +141,37 @@ app.post('/register', (request, response) => {
 })
 
 app.post('/login', (request, response) => {
+
+    
     console.log("in login\n");
     const body = request.body
 
-    User.findOne({ username: body.username }).then(user => {
-        if (user.password === body.password) {
-            var name = user.username
-            //const sessUser = { username: user.username,  password: user.password};
+    
+    const user = User.findOne({ username: body.username }).then(user => {
+
+    if (user.password === body.password) {
+        var name = user.username
+        //const sessUser = { username: user.username,  password: user.password};
 
 
-            console.log("login successful")
-            console.log("cookie: " + request.session.username);
-            localuser = body.username;
-            localid = user._id;
+        console.log("login successful")
+        //console.log("cookie: " + request.session.username);
+        request.session.username = body.username;
+        request.session.userid = user._id;
 
-            console.log(localuser, localid);
-        }
-        else {
-            console.log("login failed");
-        }
-
+        console.log(request.session.username, request.session.userid);
+    }
+    else {
+        console.log("login failed");
+    }
+    request.session.username = body.username
+    request.session.userid = user._id
+    
+    return response.send(request.session.username)
+    
     })
-    request.session.username = "name"
-    return response.send("session set")
+  
+    
 })
 
 app.get('/setReq', (request, response) => {
@@ -177,22 +181,25 @@ app.get('/setReq', (request, response) => {
 })
 
 app.get('/getReq', (request, response) => {
+
+
+    
     var name = request.session.username
-    console.log('yo ' + localuser + ' ' + localid)
+    console.log('yo ' + request.session.username + ' ' + request.session.userid)
+    console.log('cookie guy: ', name, request.session.userid)
     return response.send(name)
+    
 })
 
 
 app.post('/savePost', (request, response) => {
     const post = new Post({
         pictures: request.pictures,
-        owner: request.session.userid || localid,//request.session._id,
+        owner: request.session.userid || request.session.userid,
         volunteers: [],
         location: {
             lat: locallat,
             lng: locallng
-            //request.lat,
-            //request.lng
 
         }
     })
@@ -215,9 +222,9 @@ app.get('/fillFeed', (request, response) => {
 app.post("/upload_files", upload.array("files"), uploadFiles);
 
 function uploadFiles(req, res) {
-    //localuser = "a@a";
+    //request.session.username = "a@a";
     console.log('reached upload files')
-    User.findOne({ username: localuser }).then(users => {
+    User.findOne({ username: request.session.username }).then(users => {
         const post = new Post({
             pictures: req.files[0].filename,
             description: req.body.textarea,
@@ -232,7 +239,7 @@ function uploadFiles(req, res) {
 
     const chat = new Chat({
         iden:0,
-        users: [localid],
+        users: [request.session.userid],
         messages: []
     });
     chat.save();
@@ -250,7 +257,7 @@ app.get('/getPopulate', (request, response) => {
 app.get('/populate', (request, response) => {
     console.log("got here\n");
 
-    User.findOne({ username: localuser }).then(users => {
+    User.findOne({ username: request.session.username }).then(users => {
         const post = new Post({
             pictures: "pic",
             owner: users._id,
@@ -300,16 +307,16 @@ app.get('/download/:id', function(req, res){
 });
 
 app.get('/getUser', (request, response) => {
-    response.json({"username": localuser});
+    response.json({"username": request.session.username});
 })
 
 app.post('/sendText', (request, response) => {
     console.log('reached to sendText')
-    console.log(localid)
+    console.log(request.session.userid)
     console.log(request.message)
     Chat.updateOne(
         {iden:0},
-        {"$push": {'messages': {sent: localid, message: request.message || "hello"}}}
+        {"$push": {'messages': {sent: request.session.userid, message: request.message || "hello"}}}
     )
 
 })
@@ -319,23 +326,23 @@ app.get('/createAndUpdate', (request, response) => {
 
     const chat = new Chat({
         iden:0,
-        users: [localid],
-        messages: [{sent: localid, message: "hello"}]
+        users: [request.session.userid],
+        messages: [{sent: request.session.userid, message: "hello"}]
     });
     chat.save();
 
     Chat.updateOne(
         {iden:0},
-        {$push: {messages: {sent: localid, message: "hey"}}}
+        {$push: {messages: {sent: request.session.userid, message: "hey"}}}
     )
         response.send('<h1>Hello World!</h1>')
 
 })
 
 app.get('/getCookies', (request, response) => {
-    User.findOne({ username: localuser }).then(users => {
-        localuser = users.username,
-        localid = users._id
+    User.findOne({ username: request.session.username }).then(users => {
+        request.session.username = users.username,
+        request.session.userid = users._id
     })
     response.send('<h1>Hello World!</h1>')
 
@@ -373,7 +380,7 @@ app.get('/clickedOnPost', (request, response) => {
     
     Post.updateOne(
         {_id:id},
-        {$push: {volunteers: localid}},function(err,doc) {
+        {$push: {volunteers: request.session.userid}},function(err,doc) {
                     if(err){
                         console.log(err);
                     }
@@ -382,7 +389,7 @@ app.get('/clickedOnPost', (request, response) => {
     )
     
     User.updateOne(
-        {username:localuser},
+        {username:request.session.username},
        {$push: {volunteering: id}},function(err,doc) {
                     if(err){
                         console.log(err);
@@ -409,7 +416,7 @@ app.get('/getTheCoords', (request, response) =>{
 
 app.get('/getUserPosts', (request, response) => {
     
-    User.findOne({username:localuser}).then(user => {
+    User.findOne({username:request.session.username}).then(user => {
         
             Post.findOne({_id:user.owner}).then(post => {
                 data = []
@@ -422,7 +429,7 @@ app.get('/getUserPosts', (request, response) => {
 
 app.get('/getUserVolunteered', (request, response) => {
     
-    User.findOne({username:localuser}).then(user => {
+    User.findOne({username:request.session.username}).then(user => {
         
         console.log(user)
             Post.findOne({_id:user.volunteering[0]}).then(post => {
@@ -437,7 +444,7 @@ app.get('/getUserVolunteered', (request, response) => {
 
 app.get('/userPosts', (request, response) => {
     
-    User.findOne({username:localuser}).then(user => {
+    User.findOne({username:request.session.username}).then(user => {
         
             response.json(user.uploaded)
     })
