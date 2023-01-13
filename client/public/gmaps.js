@@ -18,7 +18,7 @@ function initMap() {
     function onResponse(response) {
             return response.json();
         }
-        fetch(`http://localhost:3001/getTheCoords`)
+      fetch(`http://localhost:3001/getTheCoords`,{credentials: 'include', method:'GET'})
             .then(onResponse)
             .then(json => {
     

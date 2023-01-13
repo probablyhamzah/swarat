@@ -32,8 +32,9 @@ function submitForm(e) {
         method: 'POST',
         body: formData,
         headers: {
-          // "Content-Type": "multipart/form-data"
-        }
+          //"Content-Type": "multipart/form-data
+        },
+            credentials: 'include'
     })
         .then((res) => console.log(res))
         .catch((err) => ("Error occured", err));

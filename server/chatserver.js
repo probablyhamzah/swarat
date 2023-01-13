@@ -8,11 +8,14 @@ http.listen(PORT, () =>{
     console.log(`Listening on port : ${PORT}`)
 }
 )
-app.use(cors());
+app.use(cors({
+  origin : 'http://localhost:3000',
+  credentials: true,
+}));
 app.get('/api',(req, res) => {
-     res.json({
-    message: 'Hello world',
-  });
+    res.json({
+         message: 'Hello world',
+     });
 });
 
 //Socket

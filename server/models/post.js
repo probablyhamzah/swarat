@@ -7,7 +7,7 @@ const post = new mongoose.Schema({
   owner: { type: Schema.Types.ObjectId, ref: 'User' },
   volunteers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   location: { lat: Number, lng: Number },
-  chatbox: { type: Schema.Types.ObjectId, ref: 'Chat' }
+  chatid: { type: Schema.Types.ObjectId, ref: 'Chat' }
 })
 
 post.set('toJSON', {

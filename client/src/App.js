@@ -17,7 +17,7 @@ const App = () => {
          
          <Route path="/" element={<Landing />} />
          <Route path="/add" element={<Add />} />
-         <Route path="/chat" element={<Chat />} />
+         <Route path="/chat/:id" element={<Chat />} />
          <Route path="/login" element={<Login />} />
          <Route path="/upload" element={<Upload />} />
          <Route exact path="/posts" render={() => {window.location.href="posts.html"}} />

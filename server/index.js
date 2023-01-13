@@ -22,7 +22,7 @@ const Chat = require('./models/chat')
 app.use(express.json())
 app.use(cors({
   origin : 'http://localhost:3000', //(Whatever your frontend url is) 
-  credentials: true, // <= Accept credentials (cookies) sent by the client
+    credentials: true, // <= Accept credentials (cookies) sent by the client
 }))
 //app.use(express.static('build'))
 app.use(express.urlencoded({ extended: false }));
@@ -224,25 +224,29 @@ app.post("/upload_files", upload.array("files"), uploadFiles);
 function uploadFiles(req, res) {
     //request.session.username = "a@a";
     console.log('reached upload files')
-    User.findOne({ username: request.session.username }).then(users => {
+
+    const chat = new Chat({
+        users: [req.session.userid],
+        messages: []
+    });
+    chat.save();
+
+    //console.log(req.session.username)
+    //console.log(req.session.userid)
+    User.findOne({ username: req.session.username }).then(users => {
         const post = new Post({
             pictures: req.files[0].filename,
             description: req.body.textarea,
             owner: users._id,
             volunteers: [users._id],
-            location: { "lat": req.body.lat, "lng": req.body.lng }
+            location: { "lat": req.body.lat, "lng": req.body.lng },
+            chatid: chat.id
         })
         post.save();
         
         
     })
 
-    const chat = new Chat({
-        iden:0,
-        users: [request.session.userid],
-        messages: []
-    });
-    chat.save();
     console.log(req.body);
     console.log(req.files[0]);
     res.json({ message: "Successfully uploaded files" });
@@ -325,19 +329,42 @@ app.get('/createAndUpdate', (request, response) => {
     
 
     const chat = new Chat({
-        iden:0,
         users: [request.session.userid],
         messages: [{sent: request.session.userid, message: "hello"}]
     });
     chat.save();
 
     Chat.updateOne(
-        {iden:0},
-        {$push: {messages: {sent: request.session.userid, message: "hey"}}}
+        {"_id": chat._id},
+        {"$push": {"messages": {sent: request.session.userid, message: "hey"}}},function(err,doc) {
+                    if(err){
+                        console.log(err);
+                    }
+                    console.log('updated')        
+                }
+    )
+
+    
+    console.log(chat._id)
+        response.send('<h1>Hello World!</h1>')
+
+})
+
+app.get('/chatupdate', (request, response) => {
+    
+    Chat.updateOne(
+        {"_id": "6376c1e76ad15558d60aac22"},
+        {"$push": {"messages": {sent: request.session.userid, message: "hey"}}},function(err,doc) {
+                    if(err){
+                        console.log(err);
+                    }
+                    console.log('updated')        
+                }
     )
         response.send('<h1>Hello World!</h1>')
 
 })
+
 
 app.get('/getCookies', (request, response) => {
     User.findOne({ username: request.session.username }).then(users => {
@@ -349,19 +376,28 @@ app.get('/getCookies', (request, response) => {
 })
 
 
-app.get('/updateChat', (request, response) => {
-const obj = {message: "from chat"}
-Chat.updateOne(
+app.post('/updateChat', (request, response) => {
+    console.log(request.body.message)
+    const obj = {message: request.body.message}
+    Chat.updateOne(
 
-        {iden:0},
+        {_id:request.session.chatid},
         {$push: {messages: obj}},function(err,doc) {
-                    if(err){
-                        console.log(err);
-                    }
-                    console.log('updated')        
-                } 
+            if(err){
+                console.log(err);
+            }
+            console.log('chat updated')        
+        } 
     )
-        response.send('<h1>Hello World!</h1>')
+    response.send('<h1>Hello World!</h1>')
+
+})
+
+app.get('/getMessages', (request, response) => {
+    Chat.findOne({_id:request.session.chatid}).then(chat =>{
+        response.json(chat.messages)
+    })
+    //response.send('<h1>Hello World!</h1>')
 
 })
 
@@ -415,7 +451,8 @@ app.get('/getTheCoords', (request, response) =>{
 })
 
 app.get('/getUserPosts', (request, response) => {
-    
+
+    /*
     User.findOne({username:request.session.username}).then(user => {
         
             Post.findOne({_id:user.owner}).then(post => {
@@ -424,11 +461,12 @@ app.get('/getUserPosts', (request, response) => {
                 response.json(data)
             })
     })
-
+    */
+    response.json()
 })
 
 app.get('/getUserVolunteered', (request, response) => {
-    
+    /*
     User.findOne({username:request.session.username}).then(user => {
         
         console.log(user)
@@ -439,6 +477,8 @@ app.get('/getUserVolunteered', (request, response) => {
                 response.json(data)
             })
     })
+    */
+    response.json()
 
 })
 
@@ -468,6 +508,14 @@ app.get('/userVolunteered', (request, response) => {
           })
     //response.json(data)
 })
+
+app.post('/setChatID', (request, response) => {
+    console.log(request.body.chatid)
+    request.session.chatid = request.body.chatid;
+    response.send('entered')
+})
+
+
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
