@@ -125,7 +125,7 @@
         
         function calcCrow(lat1, lon1, lat2, lon2) 
         {
-          var R = 6371; // km
+          var R = 6371; 
           var dLat = toRad(lat2-lat1);
           var dLon = toRad(lon2-lon1);
           var lat1 = toRad(lat1);
@@ -138,13 +138,10 @@
           return d;
         }
 
-        // Converts numeric degrees to radians
         function toRad(Value) 
         {
             return Value * Math.PI / 180;
         }
-        
-        //getLocation();
         
         fetch(`http://localhost:3001/getPopulate`)
             .then(response => response.json())
@@ -203,7 +200,7 @@
                     but.classList.add('post_cta');
                     but.textContent = "Chat"
                     var buta = document.createElement('a');
-                    buta.href = "http://localhost:3000/gmaps.html";
+                    buta.href = `http://localhost:3000/gmaps.html?lat=${json[i].location.lat}&lng=${json[i].location.lng}`;
                     buta.classList.add('post_cta');
                     buta.textContent = "View in Map"
                     post_container.appendChild(post);
