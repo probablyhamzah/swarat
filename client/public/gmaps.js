@@ -1,62 +1,31 @@
 let map, infoWindow;
 
 function initMap() {
+
+    
+    const url = new URL(window.location.href);
+    const searchParams = new URLSearchParams(url.search);
+    const pos = { 
+        lat: parseFloat(searchParams.get('lat')) , 
+        lng: parseFloat(searchParams.get('lng')) 
+        };    
+    
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 0, lng: 0 },
+    
+  
+    center: pos,
     zoom: 15,
   });
   infoWindow = new google.maps.InfoWindow();
 
   const locationButton = document.createElement("button");
 
-  locationButton.textContent = "Pan to Location";
-  locationButton.classList.add("custom-map-control-button");
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
-  locationButton.addEventListener("click", () => {
-    
-    
-    function onResponse(response) {
-            return response.json();
-        }
-      fetch(`http://localhost:3001/getTheCoords`,{credentials: 'include', method:'GET'})
-            .then(onResponse)
-            .then(json => {
-    
-                            console.log(json);
-          
-          
-          let lat, lng;
-    
-    const pos = {
-            lat: json.lat ,
-            lng: json.lng,
-          };
-          
-          console.log(pos.lat, pos.lng)
-
           infoWindow.setPosition(pos);
           infoWindow.setContent("Location found.");
           infoWindow.open(map);
           map.setCenter(pos);
-        },
-        () => {
-          handleLocationError(true, infoWindow, map.getCenter());
-        })                      
-                            }
-                        )
-    
-    /*
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          
-      );
-    } else {
-      // Browser doesn't support Geolocation
-      handleLocationError(false, infoWindow, map.getCenter());
-    }
-  });*/
-    document.getElementById("map").appendChild(locationButton);
+            
+                              
 }
 
 function handleLocationError(browserHasGeolocation, infoWindow, pos) {
@@ -68,3 +37,4 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   );
   infoWindow.open(map);
 }
+
