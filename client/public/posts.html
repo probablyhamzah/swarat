@@ -190,11 +190,6 @@
                     para.classList.add('post_text');
                     para.textContent = json[i].description;
 
-                    const a = document.createElement('a');
-
-                    a.classList.add('post_cta');
-                    a.textContent = "Read More";
-
                     var but = document.createElement('a');
                     but.href = `http://localhost:3000/chat/${json[i].chatid}`;
                     but.classList.add('post_cta');
@@ -211,20 +206,10 @@
 
                     post_info.appendChild(h1);
                     post_info.appendChild(para);
-                    post_info.appendChild(a);
                     post_info.appendChild(but);
                     post_info.appendChild(buta);
 
 
-                    a.addEventListener("click", function () {
-                        console.log(json[i].id)
-
-                        fetch(`http://localhost:3001/clickedOnPost?id=${json[i].id}`).then(
-                            res => {
-
-                            }
-                        )
-                    });
 
                 }
 
