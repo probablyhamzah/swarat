@@ -146,11 +146,8 @@
         
         //getLocation();
         
-        function onResponse(response) {
-            return response.json();
-        }
         fetch(`http://localhost:3001/getPopulate`)
-            .then(onResponse)
+            .then(response => response.json())
             .then(json => {
             
 
