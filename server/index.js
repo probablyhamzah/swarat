@@ -311,7 +311,7 @@ app.get('/download/:id', function(req, res){
 });
 
 app.get('/getUser', (request, response) => {
-    response.json({"username": request.session.username});
+    response.json({"username": request.session.username, "userid": request.session.userid});
 })
 
 app.post('/sendText', (request, response) => {
@@ -378,7 +378,9 @@ app.get('/getCookies', (request, response) => {
 
 app.post('/updateChat', (request, response) => {
     console.log(request.body.message)
-    const obj = {message: request.body.message}
+    
+    const obj = {message: request.body.message, userid: request.session.userid, username: request.session.username}
+    console.log('obj' + request.body.user)
     Chat.updateOne(
 
         {_id:request.session.chatid},

@@ -5,7 +5,8 @@ const chat = new mongoose.Schema({
     iden: Number,
     users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     messages: [{
-        sent: { type: Schema.Types.ObjectId, ref: 'User' },
+        userid: { type: Schema.Types.ObjectId, ref: 'User' },
+        username: String,
         message: String
     }]
     

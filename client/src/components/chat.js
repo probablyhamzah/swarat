@@ -4,14 +4,15 @@ import "./App.css"
 import socketIO from 'socket.io-client';
 const socket = socketIO.connect('http://localhost:4000');
 export default function chat() {
-    let name = "name";
+    let name = "name", userid = "0";
     
     
     async function fetchData() {
         const response = await fetch(`http://localhost:3001/getUser/`, {credentials: 'include', method:'GET'}).catch(err => console.log(err));
         const record = await response.json();
         name = record.username
-        console.log(record)
+        userid = record.userid
+        console.log(name)
 
         const url = window.location.pathname;
         const id = url.substring(url.lastIndexOf('/') + 1)
@@ -53,7 +54,7 @@ export default function chat() {
             let mainDiv = document.createElement('div')
             let className = '';
             
-            if (msg.user == name)
+            if (msg.userid == userid)
                 className = 'outgoing'
             else
                 className = 'incoming'
@@ -61,7 +62,7 @@ export default function chat() {
             mainDiv.classList.add(className, 'message')
             
             let markup = `
-                <h4>${msg.user}</h4>
+                <h4>${msg.username}</h4>
                 <p>${msg.message}</p>
                `
              mainDiv.innerHTML = markup
@@ -82,6 +83,7 @@ export default function chat() {
             user: name,
             message: message.trim()
         }
+        console.log(msg)
         //const messageArea = document.getElementById('message__area');
         const textarea = document.getElementById('textarea');
         appendMessage(msg, 'outgoing')

@@ -60,7 +60,10 @@
         </div>
     </div>
     <script>
-
+        if(!window.location.hash) {
+                window.location = window.location + '#loaded';
+                window.location.reload();
+            }
 
         var responsiveSlider = function () {
 
@@ -115,6 +118,7 @@
         };
 
         window.onload = function () {
+                
             responsiveSlider();
         }
 
