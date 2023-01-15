@@ -7,6 +7,7 @@ import Login from "./components/login";
 import Upload from "./components/upload";
 import Landing from "./static/landing";
 import Chat from "./components/chat";
+//import Posts from "./components/posts";
 //import Chat from ""
 //import ChatBox from "./components/chatbox";
  
