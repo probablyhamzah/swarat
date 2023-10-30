@@ -24,7 +24,7 @@ app.use(cors({
   origin : 'http://localhost:3000', //(Whatever your frontend url is) 
     credentials: true, // <= Accept credentials (cookies) sent by the client
 }))
-//app.use(express.static('build'))
+
 app.use(express.urlencoded({ extended: false }));
 
 app.use(session({
@@ -48,7 +48,6 @@ mongoose.connect(url)
   })
 
 
-//var request.session.username = "a@a", request.session.userid;
 var localltd, locallng;
 
 var coords = {};
@@ -56,45 +55,16 @@ function toRad(degree) {
     return 3.14 * degree / 180;
 }
 
-function distance(lat1, long1, lat2, long2) {
-    lat1 = toRad(lat1);
-    long1 = toRad(long1);
-    lat2 = toRad(lat2);
-    long2 = toRad(long2);
-
-    const dlong = long2 - long1;
-    const dlat = lat2 - lat1;
-
-    const ans = pow(Math.sin(dlat / 2), 2) + Math.cos(lat1) * Math.cos(lat2) * Math.pow(sin(dlong / 2), 2);
-    ans = 2 * 6371 * Math.asin(Math.sqrt(ans));
-
-    return ans;
-}
-
-
-
 app.use(express.json());
 
 
-
-
-
-
-
-
-app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1>')
-})
-
 app.get('/users', (request, response) => {
-    console.log("got here\n");
     User.findOne({ username: request.session.username }).then(users => {
         response.json(users)
     })
 })
 
 app.get('/posts', (request, response) => {
-    console.log("got here\n");
     Post.find({}).then(post => {
         response.json(post)
     })
@@ -102,7 +72,6 @@ app.get('/posts', (request, response) => {
 
 
 app.post('/add', (request, response) => {
-    console.log("in index\n");
     const body = request.body
 
 
@@ -118,7 +87,6 @@ app.post('/add', (request, response) => {
 
 
 app.post('/register', (request, response) => {
-    console.log("in register\n");
     const body = request.body
 
     const user = new User({
@@ -140,10 +108,7 @@ app.post('/register', (request, response) => {
 
 })
 
-app.post('/login', (request, response) => {
-
-    
-    console.log("in login\n");
+app.post('/login', (request, response) => {    
     const body = request.body
 
     
@@ -151,18 +116,10 @@ app.post('/login', (request, response) => {
 
     if (user.password === body.password) {
         var name = user.username
-        //const sessUser = { username: user.username,  password: user.password};
-
-
-        console.log("login successful")
-        //console.log("cookie: " + request.session.username);
         request.session.username = body.username;
         request.session.userid = user._id;
 
         console.log(request.session.username, request.session.userid);
-    }
-    else {
-        console.log("login failed");
     }
     request.session.username = body.username
     request.session.userid = user._id
@@ -173,24 +130,6 @@ app.post('/login', (request, response) => {
   
     
 })
-
-app.get('/setReq', (request, response) => {
-    request.session.username = "name"
-
-    return response.send(request.session.username)
-})
-
-app.get('/getReq', (request, response) => {
-
-
-    
-    var name = request.session.username
-    console.log('yo ' + request.session.username + ' ' + request.session.userid)
-    console.log('cookie guy: ', name, request.session.userid)
-    return response.send(name)
-    
-})
-
 
 app.post('/savePost', (request, response) => {
     const post = new Post({
@@ -208,31 +147,17 @@ app.post('/savePost', (request, response) => {
     })
 
 })
-app.post('/sendLocation', (request, response) => {
-    console.log(request.lng);
-    //locallat = request.lat, locallng = request.lng;
-    //console.log(request.lat, request.lng)
 
-})
-
-app.get('/fillFeed', (request, response) => {
-
-})
 
 app.post("/upload_files", upload.array("files"), uploadFiles);
 
 function uploadFiles(req, res) {
-    //request.session.username = "a@a";
-    console.log('reached upload files')
-
     const chat = new Chat({
         users: [req.session.userid],
         messages: []
     });
     chat.save();
 
-    //console.log(req.session.username)
-    //console.log(req.session.userid)
     User.findOne({ username: req.session.username }).then(users => {
         const post = new Post({
             pictures: req.files[0].filename,
@@ -243,12 +168,9 @@ function uploadFiles(req, res) {
             chatid: chat.id
         })
         post.save();
-        
-        
+                
     })
 
-    console.log(req.body);
-    console.log(req.files[0]);
     res.json({ message: "Successfully uploaded files" });
 }
 
@@ -256,22 +178,6 @@ app.get('/getPopulate', (request, response) => {
     Post.find().then(posts => {
         response.json(posts)
     })
-})
-
-app.get('/populate', (request, response) => {
-    console.log("got here\n");
-
-    User.findOne({ username: request.session.username }).then(users => {
-        const post = new Post({
-            pictures: "pic",
-            owner: users._id,
-            volunteers: [users._id],
-            description: 'description',
-            location: { lat: 0, lng: 0 }
-        })
-        post.save();
-    })
-    response.send('<h1>Hello World!</h1>')
 })
 
 app.get('/deletePost', (request, response) => {
@@ -371,7 +277,7 @@ app.get('/getCookies', (request, response) => {
         request.session.username = users.username,
         request.session.userid = users._id
     })
-    response.send('<h1>Hello World!</h1>')
+    response.send('')
 
 })
 
@@ -391,7 +297,7 @@ app.post('/updateChat', (request, response) => {
             console.log('chat updated')        
         } 
     )
-    response.send('<h1>Hello World!</h1>')
+    response.send('')
 
 })
 
@@ -399,7 +305,6 @@ app.get('/getMessages', (request, response) => {
     Chat.findOne({_id:request.session.chatid}).then(chat =>{
         response.json(chat.messages)
     })
-    //response.send('<h1>Hello World!</h1>')
 
 })
 
@@ -452,45 +357,11 @@ app.get('/getTheCoords', (request, response) =>{
     response.json({lat: coords.lat, lng: coords.lng});
 })
 
-app.get('/getUserPosts', (request, response) => {
-
-    /*
-    User.findOne({username:request.session.username}).then(user => {
-        
-            Post.findOne({_id:user.owner}).then(post => {
-                data = []
-                data.push(post)
-                response.json(data)
-            })
-    })
-    */
-    response.json()
-})
-
-app.get('/getUserVolunteered', (request, response) => {
-    /*
-    User.findOne({username:request.session.username}).then(user => {
-        
-        console.log(user)
-            Post.findOne({_id:user.volunteering[0]}).then(post => {
-                console.log(post)
-                data = []
-                data.push(post)
-                response.json(data)
-            })
-    })
-    */
-    response.json()
-
-})
 
 app.get('/userPosts', (request, response) => {
-    
     User.findOne({username:request.session.username}).then(user => {
-        
             response.json(user.uploaded)
     })
-
 })
 
 app.get('/allPosts', (request, response) => {
@@ -508,7 +379,6 @@ app.get('/userVolunteered', (request, response) => {
               
               response.json(posts)
           })
-    //response.json(data)
 })
 
 app.post('/setChatID', (request, response) => {
@@ -516,7 +386,6 @@ app.post('/setChatID', (request, response) => {
     request.session.chatid = request.body.chatid;
     response.send('entered')
 })
-
 
 
 const PORT = process.env.PORT || 3001
